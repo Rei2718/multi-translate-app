@@ -5,6 +5,7 @@ import { useState } from "react";
 import DocumentInput from "@/components/DocumentInput";
 import PromptPanel from "@/components/PromptPanel";
 import TranslationView from "@/components/TranslationView";
+import PdfDownloadButton from "@/components/ui/PdfDownloadButton";
 import {
   DOC_TYPES,
   TARGET_LANGUAGES,
@@ -16,6 +17,7 @@ import type {
   TargetLangCode,
   TranslateResponse,
 } from "@/lib/types";
+import { usePdfDownload } from "@/lib/use-pdf-download";
 
 interface TranslationResult {
   translatedText: string;
@@ -34,6 +36,7 @@ export default function TranslatorApp() {
   const [error, setError] = useState<string | null>(null);
 
   const [prompt, setPrompt] = useState<string | null>(null);
+  const { state: pdfState, download: downloadPdf } = usePdfDownload();
 
   async function handleTranslate() {
     if (!originalText.trim()) {
@@ -100,14 +103,28 @@ export default function TranslatorApp() {
       )}
 
       {result && (
-        <TranslationView
-          original={originalText}
-          translated={result.translatedText}
-          targetLangLabel={getLangLabel(targetLang)}
-          mock={result.mock}
-          onGeneratePrompt={handleGeneratePrompt}
-          promptGenerated={prompt !== null}
-        />
+        <>
+          <TranslationView
+            original={originalText}
+            translated={result.translatedText}
+            targetLangLabel={getLangLabel(targetLang)}
+            mock={result.mock}
+            onGeneratePrompt={handleGeneratePrompt}
+            promptGenerated={prompt !== null}
+          />
+          <div className="flex justify-center">
+            <PdfDownloadButton
+              state={pdfState}
+              onClick={() =>
+                downloadPdf({
+                  translatedText: result.translatedText,
+                  targetLangLabel: getLangLabel(targetLang),
+                  docTypeLabel: getDocTypeLabel(docType),
+                })
+              }
+            />
+          </div>
+        </>
       )}
 
       {prompt && <PromptPanel prompt={prompt} />}
