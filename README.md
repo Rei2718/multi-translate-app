@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 多言語労働文書翻訳アプリ
 
-## Getting Started
+外国人労働者の「言語バリア」をなくす、翻訳 × AI補助ツール。
 
-First, run the development server:
+労働契約書や職場マニュアルを **DeepL** で自動翻訳し、訳が不自然なときは
+ユーザー自身の **Claude / ChatGPT** で再翻訳するための最適なプロンプトを自動生成します。
+アプリ側で AI API は呼ばないため、AI の費用は発生しません。入力した文書はサーバーに保存されません。
+
+## 主な機能
+
+- **自動翻訳**: DeepL API（無料枠）で日本語 → ベトナム語 / 中国語（簡体字）/ 英語 など
+- **原文と並列表示**: 原文と訳文を左右に並べて確認
+- **再翻訳プロンプト生成**: 文書種別・翻訳先言語・原文・DeepL下訳を組み合わせ、AI向けプロンプトを自動生成
+- **ワンクリックコピー**: 生成したプロンプトをそのまま AI に貼り付け
+- **入力方法**: テキスト貼り付け / `.txt` / PDF（PDFはブラウザ内で抽出。サーバーに送られません）
+
+## 技術スタック
+
+Next.js 16 (App Router) / React 19 / TypeScript / Tailwind CSS v4 / DeepL API / Vercel
+
+## セットアップ
 
 ```bash
+npm install
+cp .env.example .env.local   # DeepL キーを設定（任意。未設定でもモック動作）
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) を開いて確認します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### DeepL API キーの取得（任意）
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`DEEPL_API_KEY` を設定しなくても、アプリは「モック翻訳」で動作します（デモ用）。
+実際の翻訳を使うには無料キーを取得してください。
 
-## Learn More
+1. [DeepL API Free](https://www.deepl.com/ja/pro-api) にアクセスし、無料登録する
+2. アカウント設定の「認証キー（Authentication Key for DeepL API）」をコピーする
+   - 無料版のキーは末尾が `:fx` で、`api-free.deepl.com` を使います（本アプリの既定）
+3. `.env.local` に設定する
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+DEEPL_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. dev サーバーを再起動する
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Pro 版を使う場合は `.env.local` に
+> `DEEPL_API_URL=https://api.deepl.com/v2/translate` を追加してください。
 
-## Deploy on Vercel
+## 使い方
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. 文書を入力（貼り付け / `.txt` / PDF）
+2. 文書の種類・翻訳先の言語を選ぶ
+3. 「DeepLで翻訳する」で翻訳し、原文と並べて確認
+4. 不自然なら「再翻訳プロンプトを生成」→ コピーして自身の Claude / ChatGPT に貼り付け
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 注意事項
+
+- DeepL API 無料枠の上限は月 500,000 文字です。
+- AI（Claude / ChatGPT）はユーザー自身のアカウントを使用します。
+- 入力された文書内容はサーバーに保存されません（セッション内のみで処理）。
+
+---
+
+_CSV（Creating Shared Value）をテーマとしたハッカソン出展作品_
