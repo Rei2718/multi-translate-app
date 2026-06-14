@@ -1,4 +1,4 @@
-import TranslatorApp from "@/components/TranslatorApp";
+import ComplianceAgentApp from "@/components/ComplianceAgentApp";
 import Link from "next/link";
 
 const FLOW_STEPS = [
