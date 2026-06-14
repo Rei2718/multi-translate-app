@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 
+import SampleContractModal from "@/components/SampleContractModal";
 import { DOC_TYPES, TARGET_LANGUAGES } from "@/lib/constants";
 import { extractTextFromPdf } from "@/lib/pdf";
 import type { TargetLangCode } from "@/lib/types";
@@ -15,6 +16,7 @@ interface Props {
   onTargetLangChange: (value: TargetLangCode) => void;
   onTranslate: () => void;
   loading: boolean;
+  onCheckCompliance: () => void;
 }
 
 export default function DocumentInput({
@@ -26,11 +28,13 @@ export default function DocumentInput({
   onTargetLangChange,
   onTranslate,
   loading,
+  onCheckCompliance,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileLoading, setFileLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [showSample, setShowSample] = useState(false);
 
   async function handleFile(file: File) {
     setFileError(null);
@@ -64,6 +68,13 @@ export default function DocumentInput({
   }
 
   return (
+    <>
+      {showSample && (
+        <SampleContractModal
+          onLoad={(text) => { onTextChange(text); setFileName(null); }}
+          onClose={() => setShowSample(false)}
+        />
+      )}
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
       <div className="mb-4 flex flex-col gap-4 sm:flex-row">
         <label className="flex flex-1 flex-col gap-1.5">
@@ -103,9 +114,22 @@ export default function DocumentInput({
         </label>
       </div>
 
-      <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-        日本語の原文
-      </label>
+      <div className="mb-2 flex items-center justify-between">
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          日本語の原文
+        </label>
+        <button
+          type="button"
+          onClick={() => setShowSample(true)}
+          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="1" y="1" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+            <path d="M3 4h6M3 6h6M3 8h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          </svg>
+          サンプル文書を見る
+        </button>
+      </div>
       <textarea
         value={originalText}
         onChange={(e) => onTextChange(e.target.value)}
@@ -147,14 +171,27 @@ export default function DocumentInput({
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={onTranslate}
-        disabled={loading || fileLoading}
-        className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-      >
-        {loading ? "翻訳中…" : "DeepLで翻訳する"}
-      </button>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={onTranslate}
+          disabled={loading || fileLoading}
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        >
+          {loading ? "翻訳中…" : "DeepLで翻訳する"}
+        </button>
+        {originalText.trim() && (
+          <button
+            type="button"
+            onClick={onCheckCompliance}
+            disabled={fileLoading}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-6 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 sm:w-auto"
+          >
+            労働法チェック
+          </button>
+        )}
+      </div>
     </section>
+    </>
   );
 }
