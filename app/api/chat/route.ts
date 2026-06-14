@@ -21,6 +21,7 @@ export async function POST(request: Request): Promise<Response> {
 
   const messages = Array.isArray(payload.messages) ? payload.messages : [];
   const role = payload.role;
+  const language = payload.language || "Japanese";
 
   if (messages.length === 0) {
     return textError("質問を入力してください", 400);
@@ -44,7 +45,7 @@ export async function POST(request: Request): Promise<Response> {
     return streamText(mockChunks(role, last.content));
   }
 
-  const systemPrompt = buildSystemPrompt(role);
+  const systemPrompt = buildSystemPrompt(role) + `\n\n【重要】\n以下の質問に対しては、必ず「${language}」で回答を出力してください。`;
 
   let iterator: AsyncGenerator<string>;
   try {
