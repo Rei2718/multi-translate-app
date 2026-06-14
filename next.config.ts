@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    outputFileTracingIncludes: {
-      "/api/compliance-check": ["./docs/**/*"],
-    },
+  outputFileTracingIncludes: {
+    "/api/compliance-check": ["./docs/**/*"],
   },
 };
 
