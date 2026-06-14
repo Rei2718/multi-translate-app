@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import ComplianceChecker from "@/components/ComplianceChecker";
 import DocumentInput from "@/components/DocumentInput";
 import PromptPanel from "@/components/PromptPanel";
 import TranslationView from "@/components/TranslationView";
@@ -11,11 +12,13 @@ import {
   getDocTypeLabel,
   getLangLabel,
 } from "@/lib/constants";
+import { checkCompliance } from "@/lib/compliance";
 import { buildRetranslationPrompt } from "@/lib/prompt";
 import type {
   TargetLangCode,
   TranslateResponse,
 } from "@/lib/types";
+import type { ComplianceItem } from "@/lib/compliance";
 
 interface TranslationResult {
   translatedText: string;
@@ -34,6 +37,7 @@ export default function TranslatorApp() {
   const [error, setError] = useState<string | null>(null);
 
   const [prompt, setPrompt] = useState<string | null>(null);
+  const [complianceItems, setComplianceItems] = useState<ComplianceItem[] | null>(null);
 
   async function handleTranslate() {
     if (!originalText.trim()) {
@@ -66,6 +70,10 @@ export default function TranslatorApp() {
     }
   }
 
+  function handleCheckCompliance() {
+    setComplianceItems(checkCompliance(originalText));
+  }
+
   function handleGeneratePrompt() {
     if (!result) return;
     const generated = buildRetranslationPrompt({
@@ -88,6 +96,7 @@ export default function TranslatorApp() {
         onTargetLangChange={setTargetLang}
         onTranslate={handleTranslate}
         loading={loading}
+        onCheckCompliance={handleCheckCompliance}
       />
 
       {error && (
@@ -111,6 +120,8 @@ export default function TranslatorApp() {
       )}
 
       {prompt && <PromptPanel prompt={prompt} />}
+
+      {complianceItems && <ComplianceChecker items={complianceItems} />}
     </div>
   );
 }

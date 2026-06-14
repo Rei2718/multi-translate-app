@@ -44,16 +44,7 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto w-full max-w-3xl px-5 py-6 sm:px-6">
-          <ul className="flex flex-col gap-1.5 text-xs leading-6 text-zinc-500 dark:text-zinc-400">
-            <li>・入力された文書はサーバーに保存されません（セッション内のみで処理されます）。</li>
-            <li>・AI（Claude / ChatGPT）はご自身のアカウントを使用します。アプリ側で AI の費用は発生しません。</li>
-            <li>・DeepL API 無料枠の上限は月 500,000 文字です。</li>
-          </ul>
-          <p className="mt-3 text-[11px] text-zinc-400">
-            CSV（Creating Shared Value）をテーマとしたハッカソン出展作品
-          </p>
-        </div>
+        <div className="mx-auto w-full max-w-3xl px-5 py-6 sm:px-6"></div>
       </footer>
     </div>
   );
