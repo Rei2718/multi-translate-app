@@ -42,3 +42,21 @@ export interface TranslateResponse {
   /** エラー時のメッセージ */
   error?: string;
 }
+
+/** コンプラQ&Aエージェントの利用者の立場 */
+export type ChatRole = "worker" | "employer";
+
+/** チャット1件分のメッセージ */
+export interface ChatMessage {
+  /** user = 質問者、assistant = エージェントの回答 */
+  role: "user" | "assistant";
+  content: string;
+}
+
+/** /api/chat へのリクエストボディ */
+export interface ChatRequest {
+  /** これまでの会話履歴（最後の要素が最新の質問） */
+  messages: ChatMessage[];
+  /** 労働者 / 雇用者 のどちらの視点で回答するか */
+  role: ChatRole;
+}
