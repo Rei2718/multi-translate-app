@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "多言語労働文書翻訳アプリ",
+  title: "ワーク・コンパス — 労働法AIエージェント",
   description:
-    "労働契約書や職場マニュアルを母国語で正しく理解するための、DeepL翻訳とAI再翻訳プロンプト生成ツール",
+    "労働者の権利保護と雇用者の法令遵守を24時間支援するAIエージェント。労働基準法の条文を根拠に、あなたの疑問にその場でお答えします。",
 };
 
 export default function RootLayout({
